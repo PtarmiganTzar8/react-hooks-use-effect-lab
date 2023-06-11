@@ -1,14 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function Question({ question, onAnswered }) {
   const [timeRemaining, setTimeRemaining] = useState(10);
 
-  // add useEffect code
+  useEffect(() => {
+    if (timeRemaining == 0) {
+      setTimeRemaining(10)
+      onAnswered(false)
+      return}
+
+    const countdown = setTimeout(() => {
+      setTimeRemaining((sec) => sec - 1);
+    }, 1000);
+
+    return function cleanup() {
+      clearTimeout(countdown)
+    }
+  }, [timeRemaining]);
 
   function handleAnswer(isCorrect) {
     setTimeRemaining(10);
     onAnswered(isCorrect);
   }
+
+  // function timeManage (timeRemaining) {
+  //   if (timeRemaining = 0) {
+  //     setTimeRemaining(10)
+  //     onAnswered(false)
+  //     return timeRemaining + " seconds left"
+  //   } else {
+  //   return timeRemaining + " seconds left"
+  // }}
 
   const { id, prompt, answers, correctIndex } = question;
 
@@ -24,9 +46,14 @@ function Question({ question, onAnswered }) {
           </button>
         );
       })}
-      <h5>{timeRemaining} seconds remaining</h5>
+      <h5>
+        {timeRemaining} seconds remaining
+      </h5>
     </>
   );
 }
 
 export default Question;
+
+
+// if timeremaining = 0, reset to 10, and do handleAnswer(false)
